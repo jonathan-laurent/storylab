@@ -20,7 +20,6 @@ pstate cs =
 --------------------------------------------------------------------------------
 
 instance StatePredicate PState where
-
   top = PVal top
 
   conj Bot _ = Bot

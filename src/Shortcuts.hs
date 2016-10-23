@@ -38,7 +38,6 @@ doNothing = Event "" (pval []) (pval [])
 initFalse ::[Var] -> PState
 initFalse vs = pstate (map (,false) vs)
 
-
 labelAuto :: [Event] -> [LabeledEvent]
 labelAuto evs =
   aux evs Map.empty

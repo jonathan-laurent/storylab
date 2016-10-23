@@ -34,10 +34,9 @@ data Configuration = Conf {
 
 mkConfig :: [LabeledEvent] -> [(Label, Label)] -> Configuration
 mkConfig les prec =
-
   let eMap :: Map Label Event
       eMap = Map.fromList les
-
+      
       succMap :: Map Label [Label]
       succMap = Map.fromList . factorFst . groupBy ((==) `on` fst) $ prec
 
@@ -51,20 +50,13 @@ mkConfig les prec =
                       Nothing -> error ("Label " ++ l ++ " does not exist")
                       Just v -> v
 
-      toLabel :: Vertex -> Label
-      toLabel v = snd3 (vertexDescr v)
-
+      toLabel v   = snd3 (vertexDescr v)
       topological = map toLabel (Graph.topSort graph)
-
-      labelsSet = Set.fromList topological
-      
-      predGraph = Graph.transposeG graph
+      labelsSet   = Set.fromList topological
+      predGraph   = Graph.transposeG graph
   in
-
     Conf graph fromLabel toLabel eMap topological labelsSet predGraph
-
   where
-    
     factorFst ll = map (\l -> (fst (head l), map snd l)) ll
     fst3 (a, b, c) = a
     snd3 (a, b, c) = b
@@ -132,23 +124,20 @@ prefixes cfg =
           if e `Set.member` inside then []
           else
             aux es inside (succs ! e `Set.union` outside)
-              
+            
 
 subtrace :: Configuration -> Set Label -> Trace
 subtrace cfg keep =
   Trace [ (l, eventsMap cfg ! l) | l <- topological cfg, l `Set.member` keep ]
 
-
 residual :: Configuration -> Prefix -> Set Label
 residual cfg pr = (labelsSet cfg) `Set.difference` pr
-
 
 resPres :: Configuration -> [(Prefix, PState)]
 resPres cfg = do
   pref <- prefixes cfg
   let resT = subtrace cfg (residual cfg pref)
   return (pref, pre resT)
-
 
 traceOfConfiguration :: Configuration -> Trace
 traceOfConfiguration cfg = subtrace cfg (labelsSet cfg)

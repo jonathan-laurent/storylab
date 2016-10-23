@@ -18,21 +18,15 @@ varCol v
   | v == "0"  = white
   | otherwise = lightgrey
 
-
 traceLegend vars t = (xlegend, ylegend)
   where xlegend = map xtext vars
         ylegend = [ ytext (kind e) | e <- traceEvents t ]
 
 traceEventsDiag :: GridOptions -> [Var] -> Trace -> Diag
-
 traceEventsDiag opts vars t =
-  
   gridDiag opts (Grid elts xlegend ylegend)
-  
   where
-    
     (xlegend, ylegend) = traceLegend vars t
-
     elts = do
       e <-  traceEvents t
       return $ do
@@ -44,26 +38,16 @@ traceEventsDiag opts vars t =
               Just v  -> return $ circleBullet # fc (varCol v)
               Nothing -> return $ mempty
 
-
 traceExecutionDiag :: GridOptions -> [Var] -> Trace -> PState -> Diag
-
 traceExecutionDiag opts vars t i =
-
   gridDiag opts (Grid elts xlegend ylegend)
-
   where
-
     steps = init (scanTrace t i)
-
     (xlegend, ylegend) = traceLegend vars t
-
     elts = stateRows vars steps
 
-
 traceFullDiag vars t i =
-
   traceEventsDiag def vars t ||| strutX 0.8 |||
-  
   traceExecutionDiag (def {showYLegend = False}) vars t i
 
 --------------------------------------------------------------------------------
@@ -82,17 +66,11 @@ stateRows vars steps = do
 --------------------------------------------------------------------------------
 
 prefixesDiag prefs cfg =
-  
   gridDiag def (Grid elts xlegend ylegend)
-
   where
-
     n = length prefs
-
     labels = topological cfg
-
     xlegend = [ xtext (take 3 . kind $ eventsMap cfg ! l) | l <- labels ]
-
     ylegend = replicate n mempty
 
     elts = do
@@ -103,30 +81,18 @@ prefixesDiag prefs cfg =
           then return $ dotBullet
           else return $ mempty
 
-
 residualsDiag vars cfg =
-
   prefsDiag ||| strutX 0.8 ||| resDiag
-  
   where
-
     (prefs, res) = unzip $ init (resPres cfg)
-    
     prefsDiag = prefixesDiag prefs cfg
-
     resDiag = gridDiag def (Grid elts xlegend ylegend)
-
       where
-
         elts = stateRows vars res
-        
         xlegend = map xtext vars
-
         ylegend = replicate (length elts) mempty
 
-
 --------------------------------------------------------------------------------
-
 renderDiag f d =
   renderSVG f sizeSpec $ pad 1.1 (strutX 2 ||| d)
   where sizeSpec = mkSizeSpec (Just 400.0 ^& Nothing)
@@ -143,10 +109,10 @@ dumpTrace' f t = dumpTrace f (traceVariablesList t) t
 dumpExecution' :: FilePath -> Trace -> PState -> IO ()
 dumpExecution' f t i = dumpExecution f (traceVariablesList t) t i
 
-
 dumpResiduals :: FilePath -> [Var] -> Configuration -> IO ()
 dumpResiduals f vars cfg = renderDiag f (residualsDiag vars cfg)
 
+dumpResiduals' :: FilePath -> Configuration -> IO ()
 dumpResiduals' f cfg = dumpResiduals f (configVariablesList cfg) cfg
 
 --------------------------------------------------------------------------------

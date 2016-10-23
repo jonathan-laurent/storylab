@@ -24,7 +24,6 @@ instance Show Trace where
 --------------------------------------------------------------------------------
 
 instance EventLike Trace where
-
   pre t = foldr rewind top (traceEvents t)
 
   -- We have to enforce the invariant `pre(t) inter eff(t) = empty`
@@ -43,7 +42,6 @@ traceVariables (Trace t) =
 
 traceVariablesList :: Trace -> [Var]
 traceVariablesList = Set.toList . traceVariables
-
 
 scanTrace :: Trace -> PState -> [PState]
 scanTrace t p = scanl (flip apply) p  (traceEvents t)

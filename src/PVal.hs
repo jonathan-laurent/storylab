@@ -96,7 +96,6 @@ class StatePredicate p where
 --------------------------------------------------------------------------------
 
 instance StatePredicate PVal where
-  
   top = Constrs Map.empty
 
   conj (Constrs cs) (Constrs cs') =

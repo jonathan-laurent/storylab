@@ -15,11 +15,9 @@ import PState
 --------------------------------------------------------------------------------
 
 class EventLike e where
-
   pre :: e -> PState
-
   eff :: e -> PVal
-
+  
   apply :: e -> PState -> PState
   apply e p = p `update` (eff e)
 
@@ -36,18 +34,15 @@ class EventLike e where
 
 --------------------------------------------------------------------------------
 
-type Kind   = String
+type Kind = String
 
 data Event = Event { kind :: Kind , evPre :: PVal , evEff :: PVal }
 
 instance EventLike Event where
-  
   pre = fromPVal . evPre
-  
   eff = evEff
 
 instance Show Event where
-  
   show e = kind e
 
 --------------------------------------------------------------------------------

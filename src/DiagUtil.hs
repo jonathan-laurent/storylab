@@ -32,7 +32,6 @@ instance Default GridOptions where
     { showXLegend = True ,
       showYLegend = True }
 
-
 addCoords ls = map mkPoint xynum
   where
     xnum   = zip [0..] (reverse ls)
@@ -42,21 +41,13 @@ addCoords ls = map mkPoint xynum
 
 
 gridDiag :: GridOptions -> Grid -> Diag
-
 gridDiag opts g =
-
   (if showXLegend opts then xleg else mempty) <>
-  
   (if showYLegend opts then yleg else mempty) <>
-  
   position (addCoords (content g)) <> lines
-  
   where
-
     sup = 0.5
-    
     xsize  = fromIntegral $ length (content g !! 0) - 1 :: Double
-    
     ysize  = fromIntegral $ length (content g) - 1      :: Double
 
     lineAlong v p len =
@@ -76,9 +67,11 @@ gridDiag opts g =
     
     lines = (vlines <> hlines)  # lwG 0.02 # lc grey -- # dashingG [0.05, 0.02] 0
 
+
 gridDiag' :: Grid -> Diag
 gridDiag' = gridDiag def
 
+--------------------------------------------------------------------------------
 
 renderText a s =
   alignedText a 0.5 s
